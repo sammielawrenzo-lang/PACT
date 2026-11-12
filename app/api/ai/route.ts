@@ -8,7 +8,8 @@ async function ask(instructions:string,input:unknown,name:string,schema:unknown)
  const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{Authorization:"Bearer "+s.OPENAI_API_KEY,"Content-Type":"application/json"},body:JSON.stringify({model:s.OPENAI_MODEL,store:false,reasoning:{effort:"low"},instructions,input:JSON.stringify(input),max_output_tokens:1500,text:{format:{type:"json_schema",name,strict:true,schema}}}),signal:AbortSignal.timeout(40000)});
  const d:any=await r.json();
  if(!r.ok){
-  if(d.error?.type==="insufficient_quota"||["insufficient_quota","credit_balance_exhausted"].includes(d.error?.code))throw new Error("AI credits are exhausted. Add API credit in OpenAI billing, then try again.");
+  if(d.error?.code==="credit_balance_exhausted")throw new Error("AI credits are exhausted. Add API credit in OpenAI billing, then try again.");
+  if(d.error?.type==="insufficient_quota"||d.error?.code==="insufficient_quota")throw new Error("AI usage is paused. Check API credits and usage limits in OpenAI billing, then try again.");
   throw new Error("AI request failed. Check the configured model, API key and billing.");
  }
  const text=d.output?.flatMap((x:any)=>x.content||[]).find((x:any)=>x.type==="output_text")?.text;if(!text)throw new Error("AI did not produce a result. Human review is still available.");return JSON.parse(text);
