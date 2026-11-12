@@ -11,7 +11,7 @@ The root app builds with Next.js. Run `npm ci`, `npm test`, and `npm run build`.
 - The complete app source, approved visuals, and deployment configuration are committed to GitHub. Changes to `main` deploy automatically.
 - PayPal sandbox credentials have been saved as sensitive Vercel variables for Production and Preview. The existing credentials passed an OAuth authentication check.
 - Supabase project: `Pact` (`vcmvpqtkeybkzvpzepjy`), in the owner-selected Leck organization. Database and Auth API connectivity are verified.
-- Vercel production builds are READY. AI is not yet configured.
+- OpenAI is configured for Production and Preview with a server-only sensitive `OPENAI_API_KEY` and `OPENAI_MODEL=gpt-6.1-terra`. Requests use low reasoning effort and do not store responses. The key authenticated successfully; the first draft request returned `429 credit_balance_exhausted` / `insufficient_quota`. Add API credit in the selected OpenAI project before AI acceptance testing can continue.
 
 ## Required runtime variables
 
@@ -41,4 +41,4 @@ The production alias serves the sign-in page publicly; the application data and 
 
 Verified on 2026-11-12: local production build and 19 domain/job-authorization tests passed; Vercel builds passed; PayPal sandbox OAuth succeeded; Supabase REST and Auth endpoints returned 200; unauthenticated deadline requests returned 401; the deployed sign-in form sent an email successfully. A scheduler request processed an expired pact with simulated funds and persisted the refunded state (one checked, one completed, zero pending).
 
-Remaining acceptance checks: owner completes the email sign-in; create/read/update through the deployed UI; sandbox buyer approval, capture, and provider-confirmed refund. No live-money transaction has been performed. AI needs an approved API credential and model before its drafting/review features can be tested.
+Remaining acceptance checks: owner completes the email sign-in; create/read/update through the deployed UI; sandbox buyer approval, capture, and provider-confirmed refund; AI draft and evidence review after API credits are available. No live-money transaction has been performed. API authentication is verified, but successful AI generation has not yet been verified.

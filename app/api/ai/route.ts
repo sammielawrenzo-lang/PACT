@@ -5,8 +5,12 @@ import {settings} from "@/lib/pact/paypal";
 export const dynamic="force-dynamic";
 async function ask(instructions:string,input:unknown,name:string,schema:unknown){
  const s=settings();if(!s.OPENAI_API_KEY||!s.OPENAI_MODEL)throw new Error("AI is not connected. Write terms manually or configure the model and key.");
- const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{Authorization:"Bearer "+s.OPENAI_API_KEY,"Content-Type":"application/json"},body:JSON.stringify({model:s.OPENAI_MODEL,store:false,instructions,input:JSON.stringify(input),max_output_tokens:1500,text:{format:{type:"json_schema",name,strict:true,schema}}}),signal:AbortSignal.timeout(40000)});
- const d:any=await r.json();if(!r.ok)throw new Error("AI request failed. Check the configured model, API key and billing.");
+ const r=await fetch("https://api.openai.com/v1/responses",{method:"POST",headers:{Authorization:"Bearer "+s.OPENAI_API_KEY,"Content-Type":"application/json"},body:JSON.stringify({model:s.OPENAI_MODEL,store:false,reasoning:{effort:"low"},instructions,input:JSON.stringify(input),max_output_tokens:1500,text:{format:{type:"json_schema",name,strict:true,schema}}}),signal:AbortSignal.timeout(40000)});
+ const d:any=await r.json();
+ if(!r.ok){
+  if(d.error?.type==="insufficient_quota"||["insufficient_quota","credit_balance_exhausted"].includes(d.error?.code))throw new Error("AI credits are exhausted. Add API credit in OpenAI billing, then try again.");
+  throw new Error("AI request failed. Check the configured model, API key and billing.");
+ }
  const text=d.output?.flatMap((x:any)=>x.content||[]).find((x:any)=>x.type==="output_text")?.text;if(!text)throw new Error("AI did not produce a result. Human review is still available.");return JSON.parse(text);
 }
 export async function POST(req:Request){try{
