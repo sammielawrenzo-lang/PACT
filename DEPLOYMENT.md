@@ -44,4 +44,6 @@ Verified on 2026-11-12: local production build and 19 domain/job-authorization t
 
 Live AI checks on 2026-11-12 passed for a personal goal, a three-person shared goal, and a three-person challenge. Drafts passed the app's schema and pact-creation validation. Evidence review correctly returned `insufficient` for an incomplete goal containing an instruction to ignore the rules, and selected the expected participant from a consistent three-person evidence log. These checks invoked the actual AI route with the real OpenAI API; authentication and database persistence were test doubles. Type checking and all 19 domain/job-authorization tests passed.
 
-Remaining acceptance checks: owner completes the email sign-in; create/read/update and AI drafting/review through the deployed UI; sandbox buyer approval, capture, and provider-confirmed refund. No live-money transaction has been performed.
+Hosted UI checks passed on 2026-11-12: owner sign-in; AI-generated personal goal; keypad entry of a $1 simulated contribution; pact creation and reload; evidence submission; AI review supporting the supplied goal evidence; review persistence after reload; and a completed simulated refund. PayPal sandbox order creation also succeeded and opened the buyer checkout.
+
+Remaining acceptance checks: sandbox buyer sign-in and approval, capture, and provider-confirmed refund. No live-money transaction has been performed.
