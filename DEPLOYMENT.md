@@ -7,9 +7,11 @@ The root app builds with Next.js. Run `npm ci`, `npm test`, and `npm run build`.
 - Vercel project: `pact`, project ID `prj_rfBP3wjauIWcsx2z0XDBrmmo3OAc`
 - Team: Samuel Zion's projects (`team_bKoPdXG032tFprgdseodq4x0`)
 - Linked Git repository: `sammielawrenzo-lang/PACT`, production branch `main`
-- GitHub currently contains only its original README. The prepared source has not been pushed.
+- Production URL: https://pact-theta-one.vercel.app
+- The complete app source, approved visuals, and deployment configuration are committed to GitHub. Changes to `main` deploy automatically.
 - PayPal sandbox credentials have been saved as sensitive Vercel variables for Production and Preview. The existing credentials passed an OAuth authentication check.
-- Supabase and AI are not configured. No Vercel deployment has been published.
+- Supabase project: `Pact` (`vcmvpqtkeybkzvpzepjy`), in the owner-selected Leck organization. Database and Auth API connectivity are verified.
+- Vercel production builds are READY. AI is not yet configured.
 
 ## Required runtime variables
 
@@ -29,12 +31,14 @@ Keep secret values in Vercel settings. No provider secret uses `NEXT_PUBLIC_`.
 
 ## Database and sign-in
 
-Create a separate Pact project in the owner-selected Supabase account. Apply `database/setup.sql`, then run Supabase advisors and verify an authenticated owner can read only their rows while unauthenticated requests and direct client writes are denied. New app state is not imported automatically from the former Sites D1 database.
+`database/setup.sql` has been applied to the separate Pact project. Database checks confirmed owner-only reads, rejected client writes, and rejection of stale version updates. New app state is not imported automatically from the former Sites D1 database.
 
-Set the Supabase Site URL to the final Vercel URL and allow its `/auth/callback` redirect. Use the workspace owner's email in `PACT_OWNER_EMAIL`. The root UI retains the approved design; private workspace sign-in uses an emailed link with a PKCE session. The server verifies the user remotely before accessing any pact or executing an action. Separate participant accounts and invitations remain outside this workspace's current capabilities.
+Supabase Site URL is `https://pact-theta-one.vercel.app`; its exact `/auth/callback` redirect is allowlisted. `PACT_OWNER_EMAIL` is `leckwotsamuel@gmail.com`. The root UI retains the approved design; private workspace sign-in uses an emailed link with a PKCE session. The server verifies the user remotely before accessing any pact or executing an action. Separate participant accounts and invitations remain outside this workspace's current capabilities.
 
 ## Deployment and checks
 
-After the GitHub connection can write PACT, push this reviewed source to the repository. Vercel is linked for automatic deployments. Preserve deployment protection during setup. Verify the deployed sign-in, create/read/update persistence, sandbox order approval and capture, refund, and scheduled deadline processing before declaring the move complete.
+The production alias serves the sign-in page publicly; the application data and actions require the workspace owner. Vercel's existing protection settings were preserved. No automation bypass credential was created. The background scheduler authenticates to `/api/deadlines` with a server-only bearer credential stored in Supabase Vault and Vercel.
 
-The local build and 19 domain/job-authorization tests pass. Provider OAuth was verified. The Supabase database and end-to-end hosted payment flow still require their connections and verification.
+Verified on 2026-11-12: local production build and 19 domain/job-authorization tests passed; Vercel builds passed; PayPal sandbox OAuth succeeded; Supabase REST and Auth endpoints returned 200; unauthenticated deadline requests returned 401; the deployed sign-in form sent an email successfully. A scheduler request processed an expired pact with simulated funds and persisted the refunded state (one checked, one completed, zero pending).
+
+Remaining acceptance checks: owner completes the email sign-in; create/read/update through the deployed UI; sandbox buyer approval, capture, and provider-confirmed refund. No live-money transaction has been performed. AI needs an approved API credential and model before its drafting/review features can be tested.
