@@ -1,31 +1,46 @@
 # PACT
 
-MIT licensed. See [LICENSE](LICENSE).
+**Your word. Backed.**
 
-PACT turns shared promises and goals into clear agreements with accountable contributions. The interface follows the approved warm ivory, navy, mint, and teal designs, with separate setup pages, a custom amount keypad, personal goals, and groups of up to 20 participants.
+PACT turns personal goals, shared commitments, and group challenges into clear agreements. Participants agree on the terms, contribute through PayPal sandbox, submit evidence, and review the outcome. AI helps draft measurable terms and assess the supplied evidence.
 
-## Run and check
+[Open PACT](https://pact-theta-one.vercel.app)
 
-- Install: `npm ci`
-- Preview: `npm run dev`
-- Type check: `npm run typecheck`
-- Payment-state tests: `npm test`
-- Build: `npm run build`
+## Features
 
-The app uses Next.js, React, TypeScript, Vercel Functions, and Supabase Postgres/Auth. The earlier Sites-specific runtime is retained in `platform/sites` for migration reference. Terms and money values are validated on the server. Participant confirmations and provider operations are stored with optimistic concurrency control.
+- Personal and shared goals, plus challenges with up to 20 participants.
+- Separate setup pages for participants, terms, contributions, and review.
+- Custom contribution amounts with a numeric keypad.
+- PayPal sandbox checkout, captures, refunds, and winner-payout integration.
+- AI agreement drafting and advisory text-evidence review.
+- Payment references, receipts, and activity history.
+
+## Development
+
+Install dependencies with `npm ci`. Configure an ignored `.env.local` using the variables in [DEPLOYMENT.md](DEPLOYMENT.md), then start the app with `npm run dev`.
+
+```sh
+npm run typecheck
+npm test
+npm run build
+```
+
+The app uses Next.js, React, TypeScript, Vercel Functions, and Supabase Postgres/Auth. The earlier Sites runtime is retained in `platform/sites` as a migration reference. Server-side validation checks terms and money values; versioned database updates protect payment state from stale writes.
 
 ## Payment rules
 
-Everyone accepts before funding. Every participant must fund and confirm the same winner before a challenge payout starts. Personal and shared goals return contributions. At the deadline, unresolved contributions become due for refund without a 24-hour grace period. Refunds go to the original payment captures. New payouts cannot begin after the deadline. AI never initiates payments.
+Everyone must accept the terms before funding. Every participant must fund and confirm the same winner before a challenge payout starts. New evidence resets the review and confirmations. AI reviews are advisory and cannot initiate money movement.
 
-## Connections
+Personal and shared goals return contributions. At the deadline, unresolved contributions become due for refund to their original payment captures. New payouts cannot begin after the deadline; a payout already started remains on its reconciliation path. Scheduling and provider processing can delay refund completion.
 
-PayPal sandbox uses the server-only `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, and `PAYPAL_MERCHANT_ID`. OpenAI drafting and evidence review use `OPENAI_API_KEY` and `OPENAI_MODEL`. Keep credentials out of source and client bundles. Configure the AI model and credential with the project owner before making API requests.
+## Current scope
 
-The payment environment is disclosed at review and checkout. No success is fabricated while a provider is disconnected. The fallback walkthrough uses simulated funds. Card and bank details are managed in PayPal, not collected by Pact.
+The app supports PayPal sandbox and a simulated walkthrough, with the payment environment shown at review and checkout. Card and bank details stay in PayPal. Sandbox captures go into the configured sandbox business account; they are not held in a separate escrow account.
 
-See [DEPLOYMENT.md](DEPLOYMENT.md) for Vercel setup and [OPERATIONS.md](OPERATIONS.md) for deadline jobs.
+Sign-in is restricted to the workspace owner, who can switch participant views. Independent participant accounts, invitations, photo/video uploads, and live-money payments are not enabled. Evidence review evaluates supplied text and cannot authenticate real-world events.
 
-## Current boundaries
+Hosted sandbox checkout, capture, and refund checks have passed. The winner-payout integration still needs a provider-level acceptance test. See [DEPLOYMENT.md](DEPLOYMENT.md) for setup and validation coverage, and [OPERATIONS.md](OPERATIONS.md) for deadline jobs and reconciliation.
 
-The workspace owner can switch participant views; independent participant sign-ins, invitations, uploaded photo/video evidence, and live-money payments are not enabled. Evidence review accepts supplied text. PayPal sandbox captures go into the configured sandbox business account; this is not a separate escrow account. Real deployment would require the appropriate PayPal product approval and a payment/custody design suitable for the business.
+## License
+
+MIT licensed. See [LICENSE](LICENSE). Third-party assets and dependencies retain their respective license notices.
