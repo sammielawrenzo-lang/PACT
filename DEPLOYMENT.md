@@ -46,4 +46,6 @@ Live AI checks on 2026-11-12 passed for a personal goal, a three-person shared g
 
 Hosted UI checks passed on 2026-11-12: owner sign-in; AI-generated personal goal; keypad entry of a $1 simulated contribution; pact creation and reload; evidence submission; AI review supporting the supplied goal evidence; review persistence after reload; and a completed simulated refund. PayPal sandbox order creation also succeeded and opened the buyer checkout.
 
-Remaining acceptance checks: sandbox buyer sign-in and approval, capture, and provider-confirmed refund. No live-money transaction has been performed.
+Hosted PayPal sandbox checks also passed: a Personal sandbox buyer approved a $1 checkout, PACT captured the payment and recorded the funded state, and the owner requested a refund through the UI. PayPal returned a completed refund, and PACT displayed both capture and refund references in the receipt.
+
+The winner-payout path still needs a separate provider-level acceptance test. No live-money transaction has been performed.
