@@ -20,12 +20,8 @@ export function database(){
 export async function currentUser(){
  if(!authConfigured())return null;
  const {data,error}=await (await userClient()).auth.getUser();
+ if(error||!data.user)return null;
  const allowed=process.env.PACT_OWNER_EMAIL?.trim().toLowerCase();
- const ownerMatches=!!allowed&&data.user?.email?.toLowerCase()===allowed;
- if(error||!data.user||!ownerMatches){
-  // Never log tokens, cookie values, email addresses, or callback codes.
-  console.info("PACT_AUTH_CHECK",{errorCode:error?.code||null,hasUser:!!data.user,ownerMatches,sessionCookieCount:(await cookies()).getAll().filter(c=>/-auth-token(?:\.\d+)?$/.test(c.name)).length});
-  return null;
- }
+ if(!allowed||data.user.email?.toLowerCase()!==allowed)return null;
  return data.user;
 }

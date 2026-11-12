@@ -6,6 +6,7 @@ export async function POST(req:Request){try{
  const allowed=process.env.PACT_OWNER_EMAIL?.trim().toLowerCase();
  if(!allowed||email.toLowerCase()!==allowed)return json({error:"This private workspace is available to its owner."},403);
  const {error}=await (await userClient()).auth.signInWithOtp({email,options:{emailRedirectTo:new URL("/auth/callback",requestOrigin(req)).toString()}});
+ if(error?.status===429)return json({error:"Too many sign-in emails have been requested. Please wait before requesting another link."},429);
  if(error)return json({error:"The sign-in email could not be sent. Please try again shortly."},400);
  return json({sent:true});
 }catch(e){return failure(e);}}
