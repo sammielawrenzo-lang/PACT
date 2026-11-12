@@ -11,7 +11,8 @@ The root app builds with Next.js. Run `npm ci`, `npm test`, and `npm run build`.
 - The complete app source, approved visuals, and deployment configuration are committed to GitHub. Changes to `main` deploy automatically.
 - PayPal sandbox credentials have been saved as sensitive Vercel variables for Production and Preview. The existing credentials passed an OAuth authentication check.
 - Supabase project: `Pact` (`vcmvpqtkeybkzvpzepjy`), in the owner-selected Leck organization. Database and Auth API connectivity are verified.
-- OpenAI is configured for Production and Preview with a server-only sensitive `OPENAI_API_KEY` and `OPENAI_MODEL=gpt-6.1-terra`. Requests use low reasoning effort and do not store responses. The key authenticated successfully; the first draft request returned `429 credit_balance_exhausted` / `insufficient_quota`. Add API credit in the selected OpenAI project before AI acceptance testing can continue.
+- OpenAI is configured for Production and Preview with a server-only sensitive `OPENAI_API_KEY` and `OPENAI_MODEL=gpt-6.1-terra`. Requests use low reasoning effort and `store:false`. API credits are available. Live provider requests returned HTTP 200 for drafting and evidence review.
+- AI drafts infer personal goals, shared goals, or challenges and populate all named participants (up to 20). The existing page design is unchanged. Challenge drafts separate the result cutoff from the later refund deadline so participants can review and confirm in time.
 
 ## Required runtime variables
 
@@ -41,4 +42,6 @@ The production alias serves the sign-in page publicly; the application data and 
 
 Verified on 2026-11-12: local production build and 19 domain/job-authorization tests passed; Vercel builds passed; PayPal sandbox OAuth succeeded; Supabase REST and Auth endpoints returned 200; unauthenticated deadline requests returned 401; the deployed sign-in form sent an email successfully. A scheduler request processed an expired pact with simulated funds and persisted the refunded state (one checked, one completed, zero pending).
 
-Remaining acceptance checks: owner completes the email sign-in; create/read/update through the deployed UI; sandbox buyer approval, capture, and provider-confirmed refund; AI draft and evidence review after API credits are available. No live-money transaction has been performed. API authentication is verified, but successful AI generation has not yet been verified.
+Live AI checks on 2026-11-12 passed for a personal goal, a three-person shared goal, and a three-person challenge. Drafts passed the app's schema and pact-creation validation. Evidence review correctly returned `insufficient` for an incomplete goal containing an instruction to ignore the rules, and selected the expected participant from a consistent three-person evidence log. These checks invoked the actual AI route with the real OpenAI API; authentication and database persistence were test doubles. Type checking and all 19 domain/job-authorization tests passed.
+
+Remaining acceptance checks: owner completes the email sign-in; create/read/update and AI drafting/review through the deployed UI; sandbox buyer approval, capture, and provider-confirmed refund. No live-money transaction has been performed.
